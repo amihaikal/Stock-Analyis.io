@@ -117,5 +117,4 @@ def process():
         return jsonify({"output": f"Error: {str(e)}"})
 
 if __name__ == '__main__':
-    # Run on port 5001 (or another port if you prefer)
-    app.run(debug=True, port=5002)
+    app.run(debug=True, port=8080)
