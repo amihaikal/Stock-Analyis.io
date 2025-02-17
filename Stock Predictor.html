@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Analysis Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    input, button {
+      font-size: 1rem;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    #output {
+      margin-top: 1rem;
+      white-space: pre-wrap;
+    }
+    #plot {
+      margin-top: 1rem;
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h2>Run Stock Analysis</h2>
+  <p>Enter a ticker symbol (e.g., AAPL, TSLA, GOOG, MSFT):</p>
+  
+  <!-- Form for ticker input -->
+  <form id="stockForm">
+    <input type="text" id="tickerInput" placeholder="Enter ticker symbol" required>
+    <button type="submit">Submit</button>
+  </form>
+  
+  <!-- Output area for text -->
+  <div id="output"></div>
+  
+  <!-- Image element for the plot -->
+  <img id="plot" src="" alt="Plot will appear here" style="display: none;">
+  
+  <script>
+    document.getElementById("stockForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const ticker = document.getElementById("tickerInput").value.trim();
+      if (ticker === "") {
+        document.getElementById("output").textContent = "Please enter a ticker symbol.";
+        return;
+      }
+      
+      // Show loading message and hide plot
+      document.getElementById("output").textContent = "Loading...";
+      document.getElementById("plot").style.display = "none";
+      
+      fetch("/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ symbol: ticker })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("output").textContent = data.output;
+        if (data.plot) {
+          document.getElementById("plot").src = "data:image/png;base64," + data.plot;
+          document.getElementById("plot").style.display = "block";
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("output").textContent = "Error: " + error;
+      });
+    });
+  </script>
+</body>
+</html>
+This input can be used for symbol or any parameter you like
